@@ -1,21 +1,14 @@
 "use client";
 
-import React, { useRef } from "react";
+import React from "react";
 import Image from "next/image";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useSpring,
-  useMotionValue,
-} from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import {
   Mail,
   Phone,
   MapPin,
   Award,
   BookOpen,
-  Cpu,
   Server,
   Database,
   Cloud,
@@ -27,6 +20,7 @@ import {
   Github,
   Instagram,
 } from "lucide-react";
+
 
 /* ---------------------------------------------------------------------------
    Abhiram Gaddam – SDE Portfolio
@@ -338,6 +332,7 @@ function ScrollProgressBar() {
 }
 
 /* ---- Portrait + 2 close rings: load pulse (photo stays still) ---- */
+
 function PhotoWithRings() {
   const { scrollYProgress } = useScroll();
   const yRings = useSpring(useTransform(scrollYProgress, [0, 1], [0, -12]), {
@@ -347,36 +342,36 @@ function PhotoWithRings() {
 
   return (
     <div aria-hidden className="relative h-[460px] md:h-[560px] grid place-items-center">
-      {/* Soft glow behind rings */}
+      {/* Soft glow behind rings — MERGED style prop */}
       <motion.div
-        style={{ y: yRings }}
         className="absolute w-[460px] h-[460px] md:w-[520px] md:h-[520px] rounded-full blur-3xl"
         initial={{ opacity: 0.25, scale: 0.96 }}
         animate={{ opacity: 0.4, scale: [0.98, 1.06, 1] }}
         transition={{ duration: 1.9, ease: "easeInOut" }}
-        style={
-          {
-            background:
-              "radial-gradient(circle, rgba(245,158,11,0.22), rgba(16,185,129,0.10) 60%, transparent 70%)",
-          } as React.CSSProperties
-        }
+        style={{
+          y: yRings,
+          background:
+            "radial-gradient(circle, rgba(245,158,11,0.22), rgba(16,185,129,0.10) 60%, transparent 70%)",
+        }}
       />
+
       {/* Outer ring — close to photo */}
       <motion.div
-        style={{ y: yRings }}
         className="absolute w-[420px] h-[420px] md:w-[480px] md:h-[480px] rounded-full border-2 border-amber-400/70"
         initial={{ scale: 1 }}
         animate={{ scale: [1, 1.05, 1] }}
         transition={{ duration: 1.6, ease: "easeInOut" }}
+        style={{ y: yRings }}
       />
       {/* Inner ring — just inside outer ring */}
       <motion.div
-        style={{ y: yRings }}
         className="absolute w-[380px] h-[380px] md:w-[440px] md:h-[440px] rounded-full border border-emerald-400/70"
         initial={{ scale: 1 }}
         animate={{ scale: [1, 1.03, 1] }}
         transition={{ duration: 1.8, ease: "easeInOut", delay: 0.12 }}
+        style={{ y: yRings }}
       />
+
       {/* Photo — bigger, fixed */}
       <div className="w-[360px] h-[360px] md:w-[400px] md:h-[400px] rounded-full overflow-hidden ring-2 ring-amber-400/40 shadow-[0_0_80px_-20px_rgba(245,158,11,0.6)]">
         <Image src="/profile.jpg" alt="Abhiram Gaddam" width={800} height={800} className="h-full w-full object-cover" priority />
@@ -384,6 +379,7 @@ function PhotoWithRings() {
     </div>
   );
 }
+
 
 /* --------------------------------- Primitives --------------------------------- */
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -435,17 +431,25 @@ function GlassCard({ children, className = "" }: { children: React.ReactNode; cl
 }
 
 function ContactPill({ icon, text, href }: { icon: React.ReactNode; text: string; href?: string }) {
-  const Comp: any = href ? "a" : "div";
+  const classes =
+    "inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-100 shadow-sm hover:shadow-md transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500";
+
+  if (href) {
+    return (
+      <a href={href} className={classes}>
+        {icon}
+        <span>{text}</span>
+      </a>
+    );
+  }
   return (
-    <Comp
-      href={href}
-      className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-100 shadow-sm hover:shadow-md transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500"
-    >
+    <div className={classes}>
       {icon}
       <span>{text}</span>
-    </Comp>
+    </div>
   );
 }
+
 
 /* ------------------------- Cards with equal-height behavior ------------------------- */
 function ProjectCard({
