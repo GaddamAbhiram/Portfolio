@@ -21,7 +21,6 @@ import {
   Instagram,
 } from "lucide-react";
 
-
 /* ---------------------------------------------------------------------------
    Abhiram Gaddam – SDE Portfolio
    - Dark-only palette: Amber × Emerald
@@ -29,7 +28,7 @@ import {
    - Portrait: 2 close rings; pulse on load (no image motion) + subtle parallax
    - Projects: recruiter-style bullets
    - Experience: chronological (oldest → newest) per your preference
-   - Skills: equal-height cards
+   - Skills: equal-height cards (now two-column lists)
    - Publications: uniform View Article width
    - Floating socials pinned bottom-right
 --------------------------------------------------------------------------- */
@@ -81,10 +80,9 @@ export default function Portfolio() {
             </motion.h1>
 
             <p className="mt-6 text-lg text-slate-200/90 max-w-2xl">
-              I’m an SDE who ships features end-to-end—clean APIs, simple UIs,
-              and the tooling to keep them fast. I write readable code with
-              tests, measure what I build, and iterate from data. Goal: features
-              that are easy to maintain and hard to break.
+              I’m an aspiring SDE with a reliability mindset. I favor clear interfaces, meaningful tests,
+              and CI/CD that removes toil <br /> so teams can move fast without surprises in production.<br />
+              Goal: deliver production-ready features that are easy to <br />evolve and hard to break.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
@@ -161,7 +159,6 @@ export default function Portfolio() {
 
         {/* ------------------------------ Experience ------------------------------ */}
         <Section id="experience" title="Experience" subtitle="Impact-focused highlights (chronological).">
-          {/* Chronological (oldest → newest) per your preference */}
           <div className="grid gap-6 items-stretch">
             <RoleCard
               org="Amrita Vishwa Vidyapeetham"
@@ -204,21 +201,25 @@ export default function Portfolio() {
               icon={<Code2 className="h-5 w-5" aria-hidden />}
               title="Languages"
               items={["Java", "C++", "Python", "JavaScript", "TypeScript", "SQL", "HTML/CSS"]}
+              // perCol={4} // <- uncomment to force a 4/3 split
             />
             <SkillCard
               icon={<Server className="h-5 w-5" aria-hidden />}
               title="Frameworks"
-              items={["Spring Boot/MVC", "Hibernate","JPA", "React", "Next.js", "Angular", "Django", "Redux", "REST APIs"]}
+              items={["Spring Boot/MVC", "Hibernate", "JPA", "React", "Next.js", "Angular", "Django", "Redux", "REST APIs"]}
+              // perCol={5} // <- uncomment to force 5 on left, remaining on right
             />
             <SkillCard
               icon={<Database className="h-5 w-5" aria-hidden />}
               title="Databases"
               items={["MySQL", "PostgreSQL", "MongoDB", "Redis"]}
+              // perCol={2}
             />
             <SkillCard
               icon={<Cloud className="h-5 w-5" aria-hidden />}
               title="Cloud & Tools"
-              items={["AWS (EC2, RDS, S3)", "Docker", "Git/GitHub", "Jenkins", "JUnit/Mockito", "JMeter"]}
+              items={["AWS (EC2, RDS, S3)", "Docker", "Git/GitHub", "Jenkins", "JUnit","Mockito", "JMeter"]}
+              // perCol={3}
             />
           </div>
         </Section>
@@ -256,9 +257,9 @@ export default function Portfolio() {
               <h3 className="text-lg font-semibold">Amrita Vishwa Vidyapeetham — B.Tech Computer Science</h3>
               <p className="text-sm opacity-80 mt-1">GPA: 3.71 • Graduated Jul 2024</p>
               <div className="mt-3 inline-flex items-center gap-2">
-                              <Award className="h-5 w-5" aria-hidden />
-                              <span>Innovative Project Award</span>
-                            </div>
+                <Award className="h-5 w-5" aria-hidden />
+                <span>Innovative Project Award</span>
+              </div>
               <div className="mt-3 space-y-2">
                 <div className="inline-flex items-center gap-2">
                   <BookOpen className="h-5 w-5" aria-hidden />
@@ -275,8 +276,7 @@ export default function Portfolio() {
         <GlassCard className="h-full">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
-              <h3 className="text-2xl font-bold">Contact</h3>
-
+              <h3 className="text-2xl font-bold">Contact Me </h3>
             </div>
             <div className="flex flex-wrap gap-3">
               <ContactPill icon={<Mail className="h-4 w-4" />} text="agaddam2@student.gsu.edu" href="mailto:agaddam2@student.gsu.edu" />
@@ -290,7 +290,7 @@ export default function Portfolio() {
       <footer className="max-w-6xl mx-auto px-6 pb-16">
         <div className="text-sm opacity-80 flex items-center gap-2">
           <Rocket className="h-4 w-4" aria-hidden />
-          <span>Built with Next.js + Tailwind • A11y-enhanced</span>
+          <span>Built with Next.js • React • Tailwind CSS • TypeScript • A11y-enhanced</span>
         </div>
       </footer>
 
@@ -332,7 +332,6 @@ function ScrollProgressBar() {
 }
 
 /* ---- Portrait + 2 close rings: load pulse (photo stays still) ---- */
-
 function PhotoWithRings() {
   const { scrollYProgress } = useScroll();
   const yRings = useSpring(useTransform(scrollYProgress, [0, 1], [0, -12]), {
@@ -378,6 +377,34 @@ function PhotoWithRings() {
       </div>
     </div>
   );
+}
+
+/* Helpers */
+function placeChips(items: { label: string; icon: string }[], radius: number) {
+  // even angles around the circle
+  const step = 360 / items.length;
+  return items.map((it, i) => {
+    const angle = i * step; // 0, 120, 240 (for 3 items)
+    return (
+      <div
+        key={it.label}
+        className="absolute left-1/2 top-1/2"
+        style={{
+          transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radius}px)`,
+          transformOrigin: "center",
+        }}
+      >
+        {/* counter-rotate so text stays upright */}
+        <div
+          className="rounded-xl border border-white/10 bg-white/10 px-3 py-1.5 text-xs text-slate-100 shadow-sm backdrop-blur hover:bg-white/15"
+          style={{ transform: `rotate(-${angle}deg)` }}
+        >
+          <span className="mr-1">{it.icon}</span>
+          {it.label}
+        </div>
+      </div>
+    );
+  });
 }
 
 
@@ -450,7 +477,6 @@ function ContactPill({ icon, text, href }: { icon: React.ReactNode; text: string
   );
 }
 
-
 /* ------------------------- Cards with equal-height behavior ------------------------- */
 function ProjectCard({
   title,
@@ -494,14 +520,53 @@ function RoleCard({ org, title, time, points }: { org: string; title: string; ti
   );
 }
 
-function SkillCard({ icon, title, items }: { icon: React.ReactNode; title: string; items: string[] }) {
+/* --------------------------- NEW: Two-column list --------------------------- */
+type TwoColumnListProps = { items: string[]; perCol?: number };
+
+function TwoColumnList({ items, perCol }: TwoColumnListProps) {
+  const split = perCol ?? Math.ceil(items.length / 2);
+  const left = items.slice(0, split);
+  const right = items.slice(split);
+
+  return (
+    <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-x-8">
+      <ul className="space-y-2 list-disc pl-5 marker:text-zinc-400">
+        {left.map((it) => (
+          <li key={it} className="text-sm text-slate-300">
+            {it}
+          </li>
+        ))}
+      </ul>
+      <ul className="space-y-2 list-disc pl-5 marker:text-zinc-400">
+        {right.map((it) => (
+          <li key={it} className="text-sm text-slate-300">
+            {it}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/* --------------------------- UPDATED: SkillCard --------------------------- */
+function SkillCard({
+  icon,
+  title,
+  items,
+  perCol,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  items: string[];
+  perCol?: number; // optional: force exact split (e.g., 5/5)
+}) {
   return (
     <GlassCard className="h-full min-h-[220px] flex flex-col">
       <div className="flex items-center gap-2">
         {icon}
         <h3 className="text-base font-semibold">{title}</h3>
       </div>
-      <p className="mt-3 text-sm text-slate-300">{items.join(" • ")}</p>
+      <TwoColumnList items={items} perCol={perCol} />
       <div className="flex-1" />
     </GlassCard>
   );
